@@ -52,4 +52,21 @@ class SnakeNodeTest {
 
         System.out.println(snake.snakeToString());
     }
+
+    @Test
+    void testContains() {
+        SnakeNode snake = new SnakeNode(new int[] {0, 1});
+        snake.addTail(new int[] {0, 2});
+        snake.addTail(new int[] {0, 3});
+
+        assertTrue(snake.contains(new int[] {0, 1}));
+    }
+
+        @Test
+    void testNotContains() {
+        SnakeNode snake = new SnakeNode(new int[] {0, 1});
+        snake.addTail(new int[] {0, 2});
+
+        assertFalse(snake.contains(new int[] {0, 3}));
+    }
 }
