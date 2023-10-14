@@ -1,8 +1,8 @@
-package Snake;
+package Snake.GameObjects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import Snake.Board;
+import Snake.GameObjects.Board;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,10 +13,10 @@ class BoardTest {
     void testBoard() {
         Board board = new Board(10, 15);
 
-        assertEquals(10, board.width);
-        assertEquals(15, board.height);
-        assertEquals(10, board.board.length);
-        assertEquals(15, board.board[0].length);
+        assertEquals(10, board.width, "Board should be 10x15.");
+        assertEquals(15, board.height, "Board should be 10x15.");
+        assertEquals(10, board.board.length, "Board should be 10x15.");
+        assertEquals(15, board.board[0].length, "Board should be 10x15.");
     }
 
     @Test
@@ -24,6 +24,6 @@ class BoardTest {
     void testArea() {
         Board board = new Board(10, 15);
 
-        assertEquals(150, board.area());
+        assertEquals(150, board.area(), "Area should be 150.");
     }
 }

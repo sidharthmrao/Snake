@@ -1,42 +1,43 @@
-package Snake;
+package Snake.GameObjects;
 
-import java.util.Arrays;
+import Snake.Locations.Coordinate;
 import java.util.Iterator;
 
 public class SnakeNode implements Iterable<SnakeNode> {
-    private int[] coordinate;
+    private Coordinate coordinate;
     SnakeNode next;
 
     /**
      * Create a new snake node with a coordinate. Takes the form of the head of a linked list.
-     * @param coordinate Coordinate of the snake node. Must be of length 2.
+     * @param coordinate Coordinate of the snake node as a Coordinate.
      */
-    public SnakeNode(int[] coordinate) {
+    public SnakeNode(Coordinate coordinate) {
+        assert coordinate != null;
+
         this.coordinate = coordinate;
         this.next = null;
     }
 
     /**
      * Get the coordinate of the snake node
-     * @return An int[] representing the coordinate. Must be of length 2.
+     * @return A Coordinate representing the coordinate of the snake node as [x, y]
      */
-    public int[] coordinate() {
-        assert coordinate.length == 2;
+    public Coordinate coordinate() {
         return coordinate;
     }
 
     /**
-     * Update the entire snake from this node to the tail with a new coordinate. If addTail is
-     * true, add a new tail node. Every node after this one will be updated with the previous
-     * node's coordinate, and the new coordinate will be this node's coordinate.
+     * Update the entire snake from this node to the tail with a new Coordinate. If
+     * addTail is true, add a new tail node. Every node after this one will be updated with the
+     * previous node's coordinate, and the new coordinate will be this node's coordinate.
      * @param coordinate New coordinate. Must be of distance 1 from the previous coordinate
      * @param addTail Whether to add a new tail node
      */
-    public void update(int[] coordinate, boolean addTail) {
+    public void update(Coordinate coordinate, boolean addTail) {
         assert coordinate != null;
         assert (
-                Math.abs(coordinate[0] - this.coordinate[0]) +
-                Math.abs(coordinate[1] - this.coordinate[1])
+                Math.abs(coordinate.get(0) - this.coordinate.get(0)) +
+                Math.abs(coordinate.get(1) - this.coordinate.get(1))
         )== 1; // New coordinate must be of distance 1 from the previous coordinate
 
         if (next != null) {
@@ -48,11 +49,13 @@ public class SnakeNode implements Iterable<SnakeNode> {
     }
 
 
+
+
     /**
      * Add a new tail node to the snake
-     * @param coordinate Coordinate of the new tail node.
+     * @param coordinate Coordinate of the new tail node. Must be of length 2.
      */
-    protected void addTail(int[] coordinate) {
+    protected void addTail(Coordinate coordinate) {
         assert coordinate != null;
 
         if (next == null) {
@@ -72,13 +75,13 @@ public class SnakeNode implements Iterable<SnakeNode> {
 
     /**
      * Check if the snake contains a coordinate
-     * @param coordinate Coordinate to check as an int[]
+     * @param coordinate Coordinate to check as an int[] of length 2
      * @return Whether the snake contains the coordinate
      */
-    public boolean contains(int[] coordinate) {
+    public boolean contains(Coordinate coordinate) {
         assert coordinate != null;
 
-        if (Arrays.equals(this.coordinate, coordinate)) {
+        if (this.coordinate.equals(coordinate)) {
             return true;
         } else if (next != null) {
             return next.contains(coordinate);
@@ -94,7 +97,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
 
     @Override
     public String toString() {
-        return "[" + coordinate[0] + ", " + coordinate[1] + "]";
+        return coordinate.toString();
     }
 
     /**
@@ -110,7 +113,18 @@ public class SnakeNode implements Iterable<SnakeNode> {
         if (!(other instanceof SnakeNode newOther)) {
             return false;
         }
-        return Arrays.equals(newOther.coordinate, coordinate);
+
+        if (!coordinate.equals(newOther.coordinate)) {
+            return false;
+        }
+
+        if (next == null ^ newOther.next == null) {
+            return false;
+        } else if (next == null) {
+            return true;
+        }
+
+        return next.equals(newOther.next);
     }
 }
 

@@ -1,10 +1,12 @@
-package Snake;
+package Snake.GameObjects;
+
+import Snake.Locations.Coordinate;
 
 public class Board {
 
-    final int width;
-    final int height;
-    final int[][] board;
+    public final int width;
+    public final int height;
+    public final Coordinate[][] board;
 
     /**
      * Create a new board with a width and height
@@ -14,7 +16,7 @@ public class Board {
     public Board(int width, int height) {
         this.width = width;
         this.height = height;
-        this.board = new int[width][height];
+        this.board = new Coordinate[width][height];
     }
 
     /**
