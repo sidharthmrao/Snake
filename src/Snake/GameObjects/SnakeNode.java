@@ -19,6 +19,10 @@ public class SnakeNode implements Iterable<SnakeNode> {
         this.next = null;
     }
 
+    public SnakeNode next() {
+        return next;
+    }
+
     /**
      * Get the coordinate of the snake node
      * @return A Coordinate representing the coordinate of the snake node as [x, y]
