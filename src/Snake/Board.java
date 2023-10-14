@@ -1,8 +1,10 @@
+package Snake;
+
 public class Board {
 
-    int width;
-    int height;
-    int[][] board;
+    final int width;
+    final int height;
+    final int[][] board;
 
     /**
      * Create a new board with a width and height

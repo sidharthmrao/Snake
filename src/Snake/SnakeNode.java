@@ -1,8 +1,10 @@
+package Snake;
+
 import java.util.Arrays;
 import java.util.Iterator;
 
 public class SnakeNode implements Iterable<SnakeNode> {
-    int[] coordinate;
+    private int[] coordinate;
     SnakeNode next;
 
     /**
@@ -32,9 +34,6 @@ public class SnakeNode implements Iterable<SnakeNode> {
      */
     public void update(int[] coordinate, boolean addTail) {
         assert coordinate != null;
-
-        System.out.println("Updating " + this.coordinate[0] + ", " + this.coordinate[1] + " to " + coordinate[0] + ", " + coordinate[1]);
-
         assert (
                 Math.abs(coordinate[0] - this.coordinate[0]) +
                 Math.abs(coordinate[1] - this.coordinate[1])
