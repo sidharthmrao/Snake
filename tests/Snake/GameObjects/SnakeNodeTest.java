@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import Snake.GameObjects.SnakeNode;
 import Snake.Locations.Coordinate;
+import Snake.Locations.Vector;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -105,5 +106,15 @@ class SnakeNodeTest {
         SnakeNode snake2 = new SnakeNode(new Coordinate(new int[] {0, 1}));
 
         assertNotEquals(snake1, snake2, "Snake should not be equal to itself");
+    }
+
+    @Test
+    @DisplayName("Updating a snake with a vector should update the snake correctly")
+    void testUpdateVector() {
+        SnakeNode snake = new SnakeNode(new Coordinate(new int[] {0, 1}));
+        snake.addTail(new Coordinate(new int[] {0, 2}));
+        snake.update(new Vector(new int[] {0, -1}), true);
+
+        assertEquals("[0, 0]<-[0, 1]<-[0, 2]", snake.snakeToString(), "Snake should be updated correctly.");
     }
 }

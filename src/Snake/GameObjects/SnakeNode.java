@@ -1,6 +1,7 @@
-package Snake.GameObjects;
+ package Snake.GameObjects;
 
 import Snake.Locations.Coordinate;
+import Snake.Locations.Vector;
 import java.util.Iterator;
 
 public class SnakeNode implements Iterable<SnakeNode> {
@@ -48,8 +49,18 @@ public class SnakeNode implements Iterable<SnakeNode> {
         this.coordinate = coordinate;
     }
 
+    /**
+     * Update the entire snake from this node to the tail with a new Vector. If addTail is true,
+     * add a new tail node. Every node after this one will be updated with the previous node's
+     * coordinate, and the new coordinate will be this node's coordinate.
+     * @param vector Vector to add to the coordinate. Must be of length 2.
+     * @param addTail Whether to add a new tail node
+     */
+    public void update(Vector vector, boolean addTail) {
+        assert vector != null;
 
-
+        update(vector.add(coordinate), addTail);
+    }
 
     /**
      * Add a new tail node to the snake
