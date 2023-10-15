@@ -10,27 +10,118 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
-public class Snake extends JPanel {
+public class Snake extends JPanel implements ActionListener, KeyListener {
     private final BufferedImage canvas;
-    int scale;
+
+    /** Render Vars */
+    private final int fps = 10;
+    private final double delay = 1000 / (double) fps;
+    private final int scale;
+
+    /** Game Objects */
+    private final Board board;
+    private final SnakeNode snake;
+    private Coordinate food;
+
+    /** Game State */
+    private Direction direction = Direction.NONE;
+
+    /** Utils */
+    private final Generator generator;
+    private final Timer timer;
 
     /**
      * Create a new Snake panel. This will control the drawing of the game.
-     * @param width Width of the canvas
-     * @param height Height of the canvas
-     * @param scale Scale of the canvas
+     * @param windowWidth Width of the window
+     * @param windowHeight Height of the window
+     * @param boardWidth Width of the board
+     * @param boardHeight Height of the board
      */
-    public Snake(int width, int height, int scale) {
-        canvas = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        this.scale = scale;
+    public Snake(int windowWidth, int windowHeight, int boardWidth, int boardHeight) {
+        canvas = new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_ARGB);
+        this.scale = windowWidth / boardWidth;
+
+        this.generator = new Generator();
+        this.board = new Board(boardWidth, boardHeight);
+        this.snake = new SnakeNode(generator.genSnakeStart(board));
+        this.food = generator.genFood(board, snake);
+
+        this.timer = new Timer((int) delay, this);
+        timer.start();
     }
 
-    public Dimension getPreferredSize() {
-        return new Dimension(canvas.getWidth(), canvas.getHeight());
+    @Override
+    public void keyTyped(KeyEvent e) {}
+
+    /**
+     * Update the direction of the snake based on the key pressed. Will not allow updating in the
+     * opposite direction of the current direction.
+     * @param e KeyEvent to check
+     */
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            if (direction == Direction.DOWN) {
+                return;
+            }
+            direction = Direction.UP;
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            if (direction == Direction.UP) {
+                    return;
+            }
+            direction = Direction.DOWN;
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            if (direction == Direction.RIGHT) {
+                return;
+            }
+            direction = Direction.LEFT;
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            if (direction == Direction.LEFT) {
+                return;
+            }
+            direction = Direction.RIGHT;
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == timer) {
+            if (snake.contains(food)) {
+                food = generator.genFood(board, snake);
+                snake.update(direction.vector(), true);
+            } else {
+                snake.update(direction.vector(), false);
+            }
+
+            if (snake.containsSelf()) {
+                System.out.println("Game Over");
+                System.exit(0);
+            }
+
+            if (!board.checkEdge(snake.coordinate())) {
+                System.out.println("Game Over");
+                System.exit(0);
+            }
+
+            drawBoard(board);
+            drawFood(food);
+            drawSnake(snake);
+
+            repaint();
+        }
     }
 
     /**
@@ -58,7 +149,6 @@ public class Snake extends JPanel {
                 canvas.setRGB(x, y, color);
             }
         }
-        repaint();
     }
 
     /**
@@ -92,35 +182,6 @@ public class Snake extends JPanel {
                     scale);
         }
     }
-
-    public static void main(String[] args) {
-        int width = 1000;
-        int height = 1000;
-
-        Generator generator = new Generator();
-        Board board = new Board(50, 50);
-//        SnakeNode snake = new SnakeNode(generator.genSnakeStart(board));
-        SnakeNode snake = new SnakeNode(new Coordinate(new int[]{0, 0}));
-        snake.update(Direction.RIGHT.vector(), true);
-        snake.update(Direction.RIGHT.vector(), true);
-        snake.update(Direction.DOWN.vector(), false);
-        Coordinate food = generator.genFood(board, snake);
-
-
-        JFrame frame = new JFrame("Snake");
-        Snake snakePanel = new Snake(width, height, width / board.width);
-
-        frame.add(snakePanel);
-        frame.pack();
-        frame.setVisible(true);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        snakePanel.drawBoard(board);
-        snakePanel.drawFood(food);
-        snakePanel.drawSnake(snake);
-        snakePanel.repaint();
-    }
 }
 
 record Direction(Vector vector) {
@@ -128,4 +189,6 @@ record Direction(Vector vector) {
     final public static Direction DOWN = new Direction(new Vector(new int[]{0, 1}));
     final public static Direction LEFT = new Direction(new Vector(new int[]{-1, 0}));
     final public static Direction RIGHT = new Direction(new Vector(new int[]{1, 0}));
+
+    final public static Direction NONE = new Direction(new Vector(new int[]{0, 0}));
 }

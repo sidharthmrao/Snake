@@ -105,6 +105,13 @@ public class SnakeNode implements Iterable<SnakeNode> {
         }
     }
 
+    public boolean containsSelf() {
+        if (next == null) {
+            return false;
+        }
+        return next.contains(coordinate);
+    }
+
     @Override
     public Iterator<SnakeNode> iterator() {
         return new SnakeIterator(this);
