@@ -16,12 +16,13 @@ public class Generator {
      */
     public Coordinate genSnakeStart(Board board) {
         assert board != null;
-        assert board.width > 2 && board.height > 2; // Snake.GameObjects.Board must be greater than 2x2
+        assert board.width() > 2 && board.height() > 2; // Snake.GameObjects.Board must be greater
+        // than 2x2
 
         // Generate a random coordinate inside the board, not at edges
         return new Coordinate(new int[] {
-            random.nextInt(1, board.width - 1),
-            random.nextInt(1, board.height - 1)
+            random.nextInt(1, board.width() - 1),
+            random.nextInt(1, board.height() - 1)
         });
     }
 
@@ -39,11 +40,11 @@ public class Generator {
         assert snake.length() < board.area(); // Snake.Snake must not cover the board
 
         Coordinate food = new Coordinate(
-                new int[] {random.nextInt(board.width), random.nextInt(board.height)}
+                new int[] {random.nextInt(board.width()), random.nextInt(board.height())}
         );
         while (snake.contains(food)) { // While the food is inside the snake, generate a new food
             food = new Coordinate(
-                new int[] {random.nextInt(board.width), random.nextInt(board.height)}
+                new int[] {random.nextInt(board.width()), random.nextInt(board.height())}
             );
         }
         return food;

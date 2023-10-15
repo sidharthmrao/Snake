@@ -18,7 +18,7 @@ class GeneratorTest {
             SnakeNode snake = new SnakeNode(generator.genSnakeStart(board));
 
             assertTrue(
-                snake.coordinate().get(0) > 0 && snake.coordinate().get(0) < board.width - 1,
+                snake.coordinate().get(0) > 0 && snake.coordinate().get(0) < board.width() - 1,
                 "Snake start should be inside the board."
             );
         }
@@ -35,8 +35,10 @@ class GeneratorTest {
             Coordinate food = generator.genFood(board, snake);
 
             assertNotEquals(snake.coordinate(), food, "Food should not be inside the snake.");
-            assertTrue(food.get(0) >= 0 && food.get(0) <= board.width - 1, "Food should be inside the board.");
-            assertTrue(food.get(1) >= 0 && food.get(1) <= board.height - 1, "Food should be inside the board.");
+            assertTrue(food.get(0) >= 0 && food.get(0) <= board.width() - 1, "Food should be "
+                    + "inside the board.");
+            assertTrue(food.get(1) >= 0 && food.get(1) <= board.height() - 1, "Food should be "
+                    + "inside the board.");
         }
     }
 }

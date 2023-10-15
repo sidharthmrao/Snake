@@ -13,10 +13,8 @@ class BoardTest {
     void testBoard() {
         Board board = new Board(10, 15);
 
-        assertEquals(10, board.width, "Board should be 10x15.");
-        assertEquals(15, board.height, "Board should be 10x15.");
-        assertEquals(10, board.board.length, "Board should be 10x15.");
-        assertEquals(15, board.board[0].length, "Board should be 10x15.");
+        assertEquals(10, board.width(), "Board should be 10x15.");
+        assertEquals(15, board.height(), "Board should be 10x15.");
     }
 
     @Test

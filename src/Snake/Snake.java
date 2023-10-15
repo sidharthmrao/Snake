@@ -7,7 +7,6 @@ import Snake.Utils.Generator;
 import Snake.Locations.Vector;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -19,9 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public class Snake extends JPanel implements ActionListener, KeyListener {
@@ -146,8 +143,8 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
                         Coordinate current = snake.coordinate();
                         int nextX;
                         if (current.get(0) < 0) {
-                            nextX = board.width - 1;
-                        } else if (current.get(0) > board.width - 1) {
+                            nextX = board.width() - 1;
+                        } else if (current.get(0) > board.width() - 1) {
                             nextX = 0;
                         } else {
                             nextX = current.get(0);
@@ -155,8 +152,8 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
 
                         int nextY;
                         if (current.get(1) < 0) {
-                            nextY = board.height - 1;
-                        } else if (current.get(1) > board.height - 1) {
+                            nextY = board.height() - 1;
+                        } else if (current.get(1) > board.height() - 1) {
                             nextY = 0;
                         } else {
                             nextY = current.get(1);
@@ -204,7 +201,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
                     (int) (getWidth() * (.9)), (int) (getHeight() * .9),
                 15,
                     Color.BLACK
-                );
+                ); // Clear out the last text before toggle
                 drawText(
                     "Edge Looping: " + loop,
                     new Coordinate(getWidth() / 20, getHeight() / 20 + 120),
@@ -276,8 +273,8 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
      * @param board Board to draw
      */
     public void drawBoard(Board board) {
-        for (int x = 0; x < board.width; x++) {
-            for (int y = 0; y < board.height; y++) {
+        for (int x = 0; x < board.width(); x++) {
+            for (int y = 0; y < board.height(); y++) {
                 drawRect(Color.BLACK, x * scale, y * scale, scale, scale);
             }
         }
