@@ -35,15 +35,11 @@ public class SnakeNode implements Iterable<SnakeNode> {
      * Update the entire snake from this node to the tail with a new Coordinate. If
      * addTail is true, add a new tail node. Every node after this one will be updated with the
      * previous node's coordinate, and the new coordinate will be this node's coordinate.
-     * @param coordinate New coordinate. Must be of distance 1 from the previous coordinate
+     * @param coordinate New coordinate.
      * @param addTail Whether to add a new tail node
      */
     public void update(Coordinate coordinate, boolean addTail) {
         assert coordinate != null;
-        assert (
-                Math.abs(coordinate.get(0) - this.coordinate.get(0)) +
-                Math.abs(coordinate.get(1) - this.coordinate.get(1))
-        )== 1; // New coordinate must be of distance 1 from the previous coordinate
 
         if (next != null) {
             next.update(this.coordinate, addTail);
@@ -66,6 +62,10 @@ public class SnakeNode implements Iterable<SnakeNode> {
         update(vector.add(coordinate), addTail);
     }
 
+    /**
+     * Update only the current node. Used to teleport the snake from one location to another.
+     * @param coordinate Coordinate to offset snake to.
+     */
     public void offsetUpdate(Coordinate coordinate) {
         assert coordinate != null;
 

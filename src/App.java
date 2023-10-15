@@ -11,7 +11,7 @@ class App {
         int boardHeight = 50;
 
         int fps = 20;
-        boolean loop = true;
+        boolean loop = false;
 
         JFrame window = new JFrame("Snake");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

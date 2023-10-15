@@ -35,12 +35,13 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
 
     /** Game Objects */
     private final Board board;
-    private final SnakeNode snake;
+    private SnakeNode snake;
     private Coordinate food;
 
     /** Game State */
     private Direction direction = Direction.NONE; // Direction of the snake
     private Direction lastDirection = Direction.NONE; // Last moved direction of the snake
+    private boolean gameRunning;
 
     /** Utils */
     private final Generator generator;
@@ -62,12 +63,20 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
         this.scale = windowWidth / boardWidth;
 
         this.generator = new Generator();
+        this.timer = new Timer((int) delay, this);
         this.board = new Board(boardWidth, boardHeight);
+
+        reset();
+        timer.start();
+    }
+
+    public void reset() {
         this.snake = new SnakeNode(generator.genSnakeStart(board));
         this.food = generator.genFood(board, snake);
+        direction = Direction.NONE;
+        lastDirection = Direction.NONE;
 
-        this.timer = new Timer((int) delay, this);
-        timer.start();
+        gameRunning = true;
     }
 
     @Override
@@ -101,6 +110,10 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
             }
             direction = Direction.RIGHT;
         }
+
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && !gameRunning) {
+            reset();
+        }
     }
 
     @Override
@@ -109,57 +122,64 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == timer) {
-            if (snake.contains(food)) {
-                food = generator.genFood(board, snake);
-                snake.update(direction.vector(), true);
-            } else {
-                snake.update(direction.vector(), false);
-            }
-
-            lastDirection = direction;
-
-            if (snake.containsSelf()) {
-                System.out.println("Game Over");
-                System.exit(0);
-            }
-
-            if (!board.checkEdge(snake.coordinate())) {
-                if (loop) {
-                    Coordinate current = snake.coordinate();
-                    int nextX;
-                    if (current.get(0) < 0) {
-                        nextX = board.width - 1;
-                    } else if (current.get(0) > board.width - 1) {
-                        nextX = 0;
-                    } else {
-                        nextX = current.get(0);
-                    }
-
-                    int nextY;
-                    if (current.get(1) < 0) {
-                        nextY = board.height - 1;
-                    } else if (current.get(1) > board.height - 1) {
-                        nextY = 0;
-                    } else {
-                        nextY = current.get(1);
-                    }
-
-                    System.out.println(nextX + " " + nextY);
-
-                    snake.offsetUpdate(new Coordinate(nextX, nextY));
+            if (gameRunning) {
+                if (snake.contains(food)) {
+                    food = generator.genFood(board, snake);
+                    snake.update(direction.vector(), true);
                 } else {
-                    System.out.println("Game Over");
-                    System.exit(0);
+                    snake.update(direction.vector(), false);
                 }
+
+                lastDirection = direction;
+
+                if (snake.containsSelf()) {
+                    gameRunning = false;
+                }
+
+                if (!board.checkEdge(snake.coordinate())) {
+                    if (loop) {
+                        Coordinate current = snake.coordinate();
+                        int nextX;
+                        if (current.get(0) < 0) {
+                            nextX = board.width - 1;
+                        } else if (current.get(0) > board.width - 1) {
+                            nextX = 0;
+                        } else {
+                            nextX = current.get(0);
+                        }
+
+                        int nextY;
+                        if (current.get(1) < 0) {
+                            nextY = board.height - 1;
+                        } else if (current.get(1) > board.height - 1) {
+                            nextY = 0;
+                        } else {
+                            nextY = current.get(1);
+                        }
+
+                        snake.offsetUpdate(new Coordinate(nextX, nextY));
+                    } else {
+                        gameRunning = false;
+                        return;
+                    }
+                }
+
+                drawBoard(board);
+                drawFood(food);
+                drawSnake(snake);
+                drawText("Score: " + snake.length(), new Coordinate(0, 0), 100, 50, 25);
             }
-
-            drawBoard(board);
-            drawFood(food);
-            drawSnake(snake);
-            drawText("Score: " + snake.length(), new Coordinate(0, 0), 100, 50);
-
-            repaint();
         }
+
+        if (!gameRunning) {
+            drawText("GAME OVER.", new Coordinate(getWidth() / 20, getHeight() / 20),
+                    (int) (getWidth() * (.9)), (int) (getHeight() * .9), 50);
+            drawText("PRESS ENTER TO RESTART.", new Coordinate(getWidth() / 20,
+                            getHeight() / 10),
+                    (int) (getWidth() * (.9)), (int) (getHeight() * .9), 30);
+        }
+
+        repaint();
     }
 
     /**
@@ -172,7 +192,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
         g2.drawImage(canvas, null, null);
     }
 
-    public void drawText(String text, Coordinate coordinate, int width, int height) {
+    public void drawText(String text, Coordinate coordinate, int width, int height, int fontSize) {
         Graphics2D g2d = (Graphics2D) canvas.getGraphics();
         g2d.setRenderingHint(
             RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -185,7 +205,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
             RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
         g2d.setColor(new Color(30, 201, 139));
-        g2d.setFont(new Font("Blinker", Font.BOLD, 25));
+        g2d.setFont(new Font("Blinker", Font.BOLD, fontSize));
 
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
 
