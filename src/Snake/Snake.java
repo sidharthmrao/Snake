@@ -31,7 +31,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
     private final int fps;
     private final double delay;
     private final int scale;
-    private final boolean loop; // When the snake hits edge, loop to other side.
+    private boolean loop; // When the snake hits edge, loop to other side.
 
     /** Game Objects */
     private final Board board;
@@ -89,31 +89,36 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_UP) {
-            if (lastDirection == Direction.DOWN) {
-                return;
-            }
-            direction = Direction.UP;
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            if (lastDirection == Direction.UP) {
+        if (gameRunning) {
+            if (e.getKeyCode() == KeyEvent.VK_UP) {
+                if (lastDirection == Direction.DOWN) {
                     return;
+                }
+                direction = Direction.UP;
+            } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                if (lastDirection == Direction.UP) {
+                    return;
+                }
+                direction = Direction.DOWN;
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                if (lastDirection == Direction.RIGHT) {
+                    return;
+                }
+                direction = Direction.LEFT;
+            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                if (lastDirection == Direction.LEFT) {
+                    return;
+                }
+                direction = Direction.RIGHT;
             }
-            direction = Direction.DOWN;
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            if (lastDirection == Direction.RIGHT) {
-                return;
+        } else {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER && !gameRunning) {
+                reset();
+            } else if (e.getKeyCode() == KeyEvent.VK_L) {
+                loop = !loop;
             }
-            direction = Direction.LEFT;
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            if (lastDirection == Direction.LEFT) {
-                return;
-            }
-            direction = Direction.RIGHT;
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_ENTER && !gameRunning) {
-            reset();
-        }
     }
 
     @Override
@@ -167,19 +172,50 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
                 drawBoard(board);
                 drawFood(food);
                 drawSnake(snake);
-                drawText("Score: " + snake.length(), new Coordinate(0, 0), 100, 50, 25);
+                drawText("Score: " + snake.length(), new Coordinate(0, 0), 100, 50, 25,
+                        Color.GREEN);
             }
-        }
 
-        if (!gameRunning) {
-            drawText("GAME OVER.", new Coordinate(getWidth() / 20, getHeight() / 20),
-                    (int) (getWidth() * (.9)), (int) (getHeight() * .9), 50);
-            drawText("PRESS ENTER TO RESTART.", new Coordinate(getWidth() / 20,
-                            getHeight() / 10),
-                    (int) (getWidth() * (.9)), (int) (getHeight() * .9), 30);
-        }
+            if (!gameRunning) {
+                drawText(
+                    "GAME OVER.",
+                    new Coordinate(getWidth() / 20, getHeight() / 20),
+                    (int) (getWidth() * (.9)), (int) (getHeight() * .9),
+                    50,
+                        Color.GREEN
+                );
+                drawText(
+                    "PRESS ENTER TO RESTART.",
+                    new Coordinate(getWidth() / 20, getHeight() / 20 + 40),
+                    (int) (getWidth() * (.9)), (int) (getHeight() * .9),
+                    30,
+                        Color.GREEN
+                );
+                drawText(
+                    "Press L to toggle edge looping.",
+                    new Coordinate(getWidth() / 20, getHeight() / 20 + 90),
+                    (int) (getWidth() * (.9)), (int) (getHeight() * .9),
+                    15,
+                        Color.GREEN
+                );
+                drawText(
+                    "Edge Looping: " + !loop,
+                    new Coordinate(getWidth() / 20, getHeight() / 20 + 120),
+                    (int) (getWidth() * (.9)), (int) (getHeight() * .9),
+                15,
+                    Color.BLACK
+                );
+                drawText(
+                    "Edge Looping: " + loop,
+                    new Coordinate(getWidth() / 20, getHeight() / 20 + 120),
+                    (int) (getWidth() * (.9)), (int) (getHeight() * .9),
+                15,
+                loop ? Color.GREEN : Color.RED
+                );
+            }
 
-        repaint();
+            repaint();
+        }
     }
 
     /**
@@ -192,7 +228,8 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
         g2.drawImage(canvas, null, null);
     }
 
-    public void drawText(String text, Coordinate coordinate, int width, int height, int fontSize) {
+    public void drawText(String text, Coordinate coordinate, int width, int height, int fontSize,
+                            Color color) {
         Graphics2D g2d = (Graphics2D) canvas.getGraphics();
         g2d.setRenderingHint(
             RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -204,7 +241,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
             RenderingHints.KEY_FRACTIONALMETRICS,
             RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
-        g2d.setColor(new Color(30, 201, 139));
+        g2d.setColor(color);
         g2d.setFont(new Font("Blinker", Font.BOLD, fontSize));
 
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
