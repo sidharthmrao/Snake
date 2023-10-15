@@ -5,17 +5,19 @@ import Snake.Snake;
 class App {
 
     private static void initWindow() {
-        JFrame window = new JFrame("Snake");
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         int windowWidth = 1000;
         int windowHeight = 1000;
-        window.setPreferredSize(new Dimension(windowWidth, windowHeight));
-
         int boardWidth = 50;
         int boardHeight = 50;
 
-        Snake snake = new Snake(windowWidth, windowHeight, boardWidth, boardHeight);
+        int fps = 20;
+        boolean loop = true;
+
+        JFrame window = new JFrame("Snake");
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setPreferredSize(new Dimension(windowWidth, windowHeight));
+
+        Snake snake = new Snake(windowWidth, windowHeight, boardWidth, boardHeight, fps, loop);
         window.add(snake);
         window.addKeyListener(snake);
 

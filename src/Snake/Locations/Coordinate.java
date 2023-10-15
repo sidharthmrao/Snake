@@ -19,6 +19,10 @@ public class Coordinate {
         this.coordinate = coordinate;
     }
 
+    public Coordinate(int x, int y) {
+        this(new int[] {x, y});
+    }
+
     /**
      * Get the coordinate as an array of length 2.
      * @return An int[] representing the coordinate.

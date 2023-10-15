@@ -66,6 +66,12 @@ public class SnakeNode implements Iterable<SnakeNode> {
         update(vector.add(coordinate), addTail);
     }
 
+    public void offsetUpdate(Coordinate coordinate) {
+        assert coordinate != null;
+
+        this.coordinate = coordinate;
+    }
+
     /**
      * Add a new tail node to the snake
      * @param coordinate Coordinate of the new tail node. Must be of length 2.
