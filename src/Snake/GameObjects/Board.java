@@ -1,4 +1,5 @@
 package Snake.GameObjects;
+
 import Snake.Locations.Coordinate;
 
 public record Board(int width, int height) {
@@ -9,7 +10,8 @@ public record Board(int width, int height) {
      * @param width  Width of the board
      * @param height Height of the board
      */
-    public Board {}
+    public Board {
+    }
 
     /**
      * Get the width of the board
@@ -50,12 +52,8 @@ public record Board(int width, int height) {
     public boolean checkEdge(Coordinate coordinate) {
         assert coordinate != null;
 
-        return (
-            coordinate.x() >= 0 &&
-            coordinate.x() < width &&
-            coordinate.y() >= 0 &&
-            coordinate.y() < height
-        );
+        return (coordinate.x() >= 0 && coordinate.x() < width && coordinate.y() >= 0
+                && coordinate.y() < height);
     }
 }
 

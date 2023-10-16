@@ -1,12 +1,12 @@
 package Snake.GameObjects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import Snake.GameObjects.Board;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class BoardTest {
+
     @Test
     @DisplayName("Generating a board with a width and height should create a correctly sized "
             + "board.")

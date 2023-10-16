@@ -17,10 +17,13 @@ public class Vector extends Coordinate {
      * @param x x-coordinate
      * @param y y-coordinate
      */
-    public Vector(int x, int y) { super(new int[]{x, y}); }
+    public Vector(int x, int y) {
+        super(new int[]{x, y});
+    }
 
     /**
      * Add this vector to a Coordinate and return the result as a new Coordinate.
+     *
      * @param other Coordinate to add to this vector to.
      * @return A new Coordinate representing the result of the addition.
      */
@@ -32,6 +35,7 @@ public class Vector extends Coordinate {
 
     /**
      * Add this vector to another vector and return the result as a new Vector.
+     *
      * @param other Vector to add to this vector to.
      * @return A new Vector representing the result of the addition.
      */
@@ -43,6 +47,7 @@ public class Vector extends Coordinate {
 
     /**
      * Multiply this vector by a scalar and return the result as a new Vector.
+     *
      * @param scalar Scalar to multiply this vector by.
      * @return A new Vector representing the result of the multiplication.
      */
@@ -52,13 +57,15 @@ public class Vector extends Coordinate {
 
     /**
      * Convert this vector to a Coordinate.
+     *
      * @return A new Coordinate representing this vector.
      */
     public Coordinate toCoordinate() {
         return new Coordinate(coordinate);
     }
+
     @Override
     public String toString() {
-            return "Vector[" + coordinate[0] + ", " + coordinate[1] + "]";
+        return "Vector[" + coordinate[0] + ", " + coordinate[1] + "]";
     }
 }

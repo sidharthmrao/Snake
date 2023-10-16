@@ -11,6 +11,7 @@ public class Coordinate {
 
     /**
      * Create a new Coordinate (x,y) with an array of length 2.
+     *
      * @param coordinate Coordinate of the Coordinate as an int[]. Must be of length 2.
      */
     public Coordinate(int[] coordinate) {
@@ -20,11 +21,12 @@ public class Coordinate {
     }
 
     public Coordinate(int x, int y) {
-        this(new int[] {x, y});
+        this(new int[]{x, y});
     }
 
     /**
      * Get the coordinate as an array of length 2.
+     *
      * @return An int[] representing the coordinate.
      */
     public int[] coordinate() {
@@ -33,6 +35,7 @@ public class Coordinate {
 
     /**
      * Update the coordinate.
+     *
      * @param coordinate New coordinate. Must be of length 2.
      */
     public void update(int[] coordinate) {
@@ -43,6 +46,7 @@ public class Coordinate {
 
     /**
      * Get the coordinate at an index.
+     *
      * @param index Index of the coordinate to get.
      * @return An int representing the coordinate at the index. Must be 0 or 1.
      */
@@ -54,6 +58,7 @@ public class Coordinate {
 
     /**
      * Get the x coordinate.
+     *
      * @return An int representing the x coordinate.
      */
     public int x() {
@@ -62,15 +67,16 @@ public class Coordinate {
 
     /**
      * Get the y coordinate.
+     *
      * @return An int representing the y coordinate.
      */
     public int y() {
-            return coordinate[1];
+        return coordinate[1];
     }
 
     @Override
     public String toString() {
-            return "[" + coordinate[0] + ", " + coordinate[1] + "]";
+        return "[" + coordinate[0] + ", " + coordinate[1] + "]";
     }
 
     @Override

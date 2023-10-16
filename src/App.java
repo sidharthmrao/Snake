@@ -1,9 +1,13 @@
-import java.awt.Dimension;
-import javax.swing.*;
 import Snake.Snake;
+import java.awt.Dimension;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 class App {
 
+    /**
+     * Initialize the window
+     */
     private static void initWindow() {
         int windowWidth = 1000;
         int windowHeight = 1000;

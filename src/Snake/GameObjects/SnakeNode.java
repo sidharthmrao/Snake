@@ -1,15 +1,17 @@
- package Snake.GameObjects;
+package Snake.GameObjects;
 
 import Snake.Locations.Coordinate;
 import Snake.Locations.Vector;
 import java.util.Iterator;
 
 public class SnakeNode implements Iterable<SnakeNode> {
-    private Coordinate coordinate;
+
     SnakeNode next;
+    private Coordinate coordinate;
 
     /**
      * Create a new snake node with a coordinate. Takes the form of the head of a linked list.
+     *
      * @param coordinate Coordinate of the snake node as a Coordinate.
      */
     public SnakeNode(Coordinate coordinate) {
@@ -21,6 +23,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
 
     /**
      * Get the next node in the snake
+     *
      * @return The next node in the snake. Null if this is the tail.
      */
     public SnakeNode next() {
@@ -29,6 +32,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
 
     /**
      * Get the coordinate of the snake node
+     *
      * @return A Coordinate representing the coordinate of the snake node as [x, y]
      */
     public Coordinate coordinate() {
@@ -36,11 +40,12 @@ public class SnakeNode implements Iterable<SnakeNode> {
     }
 
     /**
-     * Update the entire snake from this node to the tail with a new Coordinate. If
-     * addTail is true, add a new tail node. Every node after this one will be updated with the
-     * previous node's coordinate, and the new coordinate will be this node's coordinate.
+     * Update the entire snake from this node to the tail with a new Coordinate. If addTail is true,
+     * add a new tail node. Every node after this one will be updated with the previous node's
+     * coordinate, and the new coordinate will be this node's coordinate.
+     *
      * @param coordinate New coordinate.
-     * @param addTail Whether to add a new tail node
+     * @param addTail    Whether to add a new tail node
      */
     public void update(Coordinate coordinate, boolean addTail) {
         assert coordinate != null;
@@ -54,10 +59,11 @@ public class SnakeNode implements Iterable<SnakeNode> {
     }
 
     /**
-     * Update the entire snake from this node to the tail with a new Vector. If addTail is true,
-     * add a new tail node. Every node after this one will be updated with the previous node's
+     * Update the entire snake from this node to the tail with a new Vector. If addTail is true, add
+     * a new tail node. Every node after this one will be updated with the previous node's
      * coordinate, and the new coordinate will be this node's coordinate.
-     * @param vector Vector to add to the coordinate. Must be of length 2.
+     *
+     * @param vector  Vector to add to the coordinate. Must be of length 2.
      * @param addTail Whether to add a new tail node
      */
     public void update(Vector vector, boolean addTail) {
@@ -68,6 +74,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
 
     /**
      * Update only the current node. Used to teleport the snake from one location to another.
+     *
      * @param coordinate Coordinate to offset snake to.
      */
     public void offsetUpdate(Coordinate coordinate) {
@@ -78,6 +85,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
 
     /**
      * Add a new tail node to the snake.
+     *
      * @param coordinate Coordinate of the new tail node. Must be of length 2.
      */
     protected void addTail(Coordinate coordinate) {
@@ -92,6 +100,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
 
     /**
      * Get the length of the snake.
+     *
      * @return The length of the snake, including this node
      */
     public int length() {
@@ -100,6 +109,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
 
     /**
      * Check if the snake contains a provided Coordinate
+     *
      * @param coordinate Coordinate to check as an int[] of length 2
      * @return Whether the snake contains the Coordinate
      */
@@ -117,6 +127,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
 
     /**
      * Check if the snake contains itself. Used to check if the snake has collided with itself.
+     *
      * @return Whether the snake contains itself (has collided with itself)
      */
     public boolean containsSelf() {
@@ -138,6 +149,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
 
     /**
      * Get a string representation of the snake
+     *
      * @return A string representation of the snake in the form of [x, y]<-[x, y]<-[x, y]...
      */
     public String snakeToString() {
@@ -165,6 +177,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
 }
 
 class SnakeIterator implements Iterator<SnakeNode> {
+
     SnakeNode current;
 
     public SnakeIterator(SnakeNode node) {
