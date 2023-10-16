@@ -67,6 +67,9 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
         timer.start();
     }
 
+    /**
+     * Restart the game. Resets the snake object and direction.
+     */
     public void reset() {
         this.snake = new SnakeNode(generator.genSnakeStart(board));
         this.food = generator.genFood(board, snake);
@@ -121,6 +124,10 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {}
 
+    /**
+     * Update the game state
+     * @param e ActionEvent to check
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == timer) {
@@ -142,21 +149,21 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
                     if (loop) {
                         Coordinate current = snake.coordinate();
                         int nextX;
-                        if (current.get(0) < 0) {
+                        if (current.x() < 0) {
                             nextX = board.width() - 1;
-                        } else if (current.get(0) > board.width() - 1) {
+                        } else if (current.x() > board.width() - 1) {
                             nextX = 0;
                         } else {
-                            nextX = current.get(0);
+                            nextX = current.x();
                         }
 
                         int nextY;
-                        if (current.get(1) < 0) {
+                        if (current.y() < 0) {
                             nextY = board.height() - 1;
-                        } else if (current.get(1) > board.height() - 1) {
+                        } else if (current.y() > board.height() - 1) {
                             nextY = 0;
                         } else {
-                            nextY = current.get(1);
+                            nextY = current.y();
                         }
 
                         snake.offsetUpdate(new Coordinate(nextX, nextY));
@@ -225,6 +232,15 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
         g2.drawImage(canvas, null, null);
     }
 
+    /**
+     * Draw text on the canvas
+     * @param text Text to draw
+     * @param coordinate Coordinate of the text
+     * @param width Width of the text
+     * @param height Height of the text
+     * @param fontSize Font size of the text
+     * @param color Color of the text
+     */
     public void drawText(String text, Coordinate coordinate, int width, int height, int fontSize,
                             Color color) {
         Graphics2D g2d = (Graphics2D) canvas.getGraphics();
@@ -243,7 +259,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
 
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
 
-        Rectangle rect = new Rectangle(coordinate.get(0), coordinate.get(1), width, height);
+        Rectangle rect = new Rectangle(coordinate.x(), coordinate.y(), width, height);
 
         int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
         int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
@@ -285,7 +301,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
      * @param food Coordinate of the food
      */
     public void drawFood(Coordinate food) {
-        drawRect(Color.RED, food.get(0) * scale, food.get(1) * scale, scale, scale);
+        drawRect(Color.RED, food.x() * scale, food.y() * scale, scale, scale);
     }
 
     /**
@@ -295,17 +311,19 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
     public void drawSnake(SnakeNode snake) {
         for (SnakeNode snakeNode : snake) {
             Coordinate coordinate = snakeNode.coordinate();
-            drawRect(Color.GREEN, coordinate.get(0) * scale, coordinate.get(1) * scale, scale,
+            drawRect(Color.GREEN, coordinate.x() * scale, coordinate.y() * scale, scale,
                     scale);
         }
     }
 }
 
+/**
+ * Direction to move the snake in
+ */
 record Direction(Vector vector) {
     final public static Direction UP = new Direction(new Vector(new int[]{0, -1}));
     final public static Direction DOWN = new Direction(new Vector(new int[]{0, 1}));
     final public static Direction LEFT = new Direction(new Vector(new int[]{-1, 0}));
     final public static Direction RIGHT = new Direction(new Vector(new int[]{1, 0}));
-
     final public static Direction NONE = new Direction(new Vector(new int[]{0, 0}));
 }

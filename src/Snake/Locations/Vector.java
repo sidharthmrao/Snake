@@ -1,7 +1,5 @@
 package Snake.Locations;
 
-import Snake.Locations.Coordinate;
-
 public class Vector extends Coordinate {
 
     /**
@@ -14,6 +12,14 @@ public class Vector extends Coordinate {
     }
 
     /**
+     * Create a new Vector (x,y) with two ints.
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
+    public Vector(int x, int y) { super(new int[]{x, y}); }
+
+    /**
      * Add this vector to a Coordinate and return the result as a new Coordinate.
      * @param other Coordinate to add to this vector to.
      * @return A new Coordinate representing the result of the addition.
@@ -21,7 +27,7 @@ public class Vector extends Coordinate {
     public Coordinate add(Coordinate other) {
         assert other != null;
 
-        return new Coordinate(new int[]{coordinate[0] + other.get(0), coordinate[1] + other.get(1)});
+        return new Coordinate(new int[]{x() + other.x(), y() + other.y()});
     }
 
     /**
@@ -32,7 +38,7 @@ public class Vector extends Coordinate {
     public Vector add(Vector other) {
         assert other != null;
 
-        return new Vector(new int[]{coordinate[0] + other.get(0), coordinate[1] + other.get(1)});
+        return new Vector(new int[]{x() + other.x(), y() + other.y()});
     }
 
     /**

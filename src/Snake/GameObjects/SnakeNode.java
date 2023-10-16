@@ -19,6 +19,10 @@ public class SnakeNode implements Iterable<SnakeNode> {
         this.next = null;
     }
 
+    /**
+     * Get the next node in the snake
+     * @return The next node in the snake. Null if this is the tail.
+     */
     public SnakeNode next() {
         return next;
     }
@@ -73,7 +77,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
     }
 
     /**
-     * Add a new tail node to the snake
+     * Add a new tail node to the snake.
      * @param coordinate Coordinate of the new tail node. Must be of length 2.
      */
     protected void addTail(Coordinate coordinate) {
@@ -87,7 +91,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
     }
 
     /**
-     * Get the length of the snake
+     * Get the length of the snake.
      * @return The length of the snake, including this node
      */
     public int length() {
@@ -95,9 +99,9 @@ public class SnakeNode implements Iterable<SnakeNode> {
     }
 
     /**
-     * Check if the snake contains a coordinate
+     * Check if the snake contains a provided Coordinate
      * @param coordinate Coordinate to check as an int[] of length 2
-     * @return Whether the snake contains the coordinate
+     * @return Whether the snake contains the Coordinate
      */
     public boolean contains(Coordinate coordinate) {
         assert coordinate != null;
@@ -111,6 +115,10 @@ public class SnakeNode implements Iterable<SnakeNode> {
         }
     }
 
+    /**
+     * Check if the snake contains itself. Used to check if the snake has collided with itself.
+     * @return Whether the snake contains itself (has collided with itself)
+     */
     public boolean containsSelf() {
         if (next == null) {
             return false;
@@ -133,7 +141,7 @@ public class SnakeNode implements Iterable<SnakeNode> {
      * @return A string representation of the snake in the form of [x, y]<-[x, y]<-[x, y]...
      */
     public String snakeToString() {
-        return toString() + (next != null ? "<-" + next.snakeToString() : "");
+        return this + (next != null ? "<-" + next.snakeToString() : "");
     }
 
     @Override
@@ -174,4 +182,4 @@ class SnakeIterator implements Iterator<SnakeNode> {
         current = current.next;
         return data;
     }
-};
+}

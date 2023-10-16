@@ -52,6 +52,22 @@ public class Coordinate {
         return coordinate[index];
     }
 
+    /**
+     * Get the x coordinate.
+     * @return An int representing the x coordinate.
+     */
+    public int x() {
+        return coordinate[0];
+    }
+
+    /**
+     * Get the y coordinate.
+     * @return An int representing the y coordinate.
+     */
+    public int y() {
+            return coordinate[1];
+    }
+
     @Override
     public String toString() {
             return "[" + coordinate[0] + ", " + coordinate[1] + "]";

@@ -9,8 +9,7 @@ public record Board(int width, int height) {
      * @param width  Width of the board
      * @param height Height of the board
      */
-    public Board {
-    }
+    public Board {}
 
     /**
      * Get the width of the board
@@ -52,10 +51,10 @@ public record Board(int width, int height) {
         assert coordinate != null;
 
         return (
-                coordinate.get(0) >= 0 &&
-                coordinate.get(0) < width &&
-                coordinate.get(1) >= 0 &&
-                coordinate.get(1) < height
+            coordinate.x() >= 0 &&
+            coordinate.x() < width &&
+            coordinate.y() >= 0 &&
+            coordinate.y() < height
         );
     }
 }
