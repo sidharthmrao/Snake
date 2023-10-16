@@ -166,13 +166,13 @@ public class SnakeNode implements Iterable<SnakeNode> {
             return false;
         }
 
-        if (next == null ^ newOther.next == null) {
+        if (next == null ^ newOther.next() == null) {
             return false;
         } else if (next == null) {
             return true;
         }
 
-        return next.equals(newOther.next);
+        return next.equals(newOther.next());
     }
 }
 

@@ -24,11 +24,6 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
 
     private final BufferedImage canvas;
 
-    /**
-     * Render Vars
-     */
-    private final int fps;
-    private final double delay;
     private final int scale;
     /**
      * Game Objects
@@ -61,8 +56,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
             boolean loop) {
         canvas = new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_ARGB);
 
-        this.fps = fps;
-        this.delay = 1000 / (double) fps;
+        double delay = 1000 / (double) fps;
         this.loop = loop;
         this.scale = windowWidth / boardWidth;
 
@@ -315,9 +309,9 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
  */
 record Direction(Vector vector) {
 
-    final public static Direction UP = new Direction(new Vector(new int[]{0, -1}));
-    final public static Direction DOWN = new Direction(new Vector(new int[]{0, 1}));
-    final public static Direction LEFT = new Direction(new Vector(new int[]{-1, 0}));
-    final public static Direction RIGHT = new Direction(new Vector(new int[]{1, 0}));
-    final public static Direction NONE = new Direction(new Vector(new int[]{0, 0}));
+    final public static Direction UP = new Direction(new Vector(0, -1));
+    final public static Direction DOWN = new Direction(new Vector(0, 1));
+    final public static Direction LEFT = new Direction(new Vector(-1, 0));
+    final public static Direction RIGHT = new Direction(new Vector(1, 0));
+    final public static Direction NONE = new Direction(new Vector(0, 0));
 }
