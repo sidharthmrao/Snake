@@ -3,7 +3,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-class App {
+class Main {
 
     /**
      * Initialize the window
@@ -32,6 +32,6 @@ class App {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(App::initWindow);
+        SwingUtilities.invokeLater(Main::initWindow);
     }
 }
