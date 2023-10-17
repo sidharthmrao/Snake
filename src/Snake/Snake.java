@@ -17,32 +17,36 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class Snake extends JPanel implements ActionListener, KeyListener {
-
     private final BufferedImage canvas;
-
     private final int scale;
     /**
      * Game Objects
      */
     private final Board board;
+    private SnakeNode snake;
+    private Coordinate food;
     /**
      * Utils
      */
     private final Generator generator;
-    private final Timer timer;
+    private Timer timer;
     private boolean loop; // When the snake hits edge, loop to other side.
-    private SnakeNode snake;
-    private Coordinate food;
     /**
      * Game State
      */
     private Direction direction = Direction.NONE; // Direction of the snake
     private Direction lastDirection = Direction.NONE; // Last moved direction of the snake
     private boolean gameRunning;
+    private String gameMode; // Classic, Walls, Portals, etc.
+    private int speed = 1;
+    private double delay;
+    private HashMap<String, Integer> highScores = new HashMap<>();
+    private double startTime;
 
     /**
      * Create a new Snake panel. This will control the drawing of the game.
@@ -56,28 +60,34 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
             boolean loop) {
         canvas = new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_ARGB);
 
-        double delay = 1000 / (double) fps;
+        this.delay = 1000 / (double) fps;
         this.loop = loop;
         this.scale = windowWidth / boardWidth;
 
         this.generator = new Generator();
-        this.timer = new Timer((int) delay, this);
         this.board = new Board(boardWidth, boardHeight);
 
+        highScores.put("Classic", 0);
+        highScores.put("Walls", 0);
+        highScores.put("Portals", 0);
+        gameMode = "Classic";
+
         reset();
-        timer.start();
     }
 
     /**
      * Restart the game. Resets the snake object and direction.
      */
     public void reset() {
+        this.timer = new Timer((int) delay * speed, this);
         this.snake = new SnakeNode(generator.genSnakeStart(board));
         this.food = generator.genFood(board, snake);
         direction = Direction.NONE;
         lastDirection = Direction.NONE;
 
         gameRunning = true;
+        timer.start();
+        startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -128,6 +138,67 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
     public void keyReleased(KeyEvent e) {
     }
 
+    public void classicSnakeUpdate() {
+        if (snake.contains(food)) {
+            food = generator.genFood(board, snake);
+            snake.update(direction.vector(), true);
+        } else {
+            snake.update(direction.vector(), false);
+        }
+
+        lastDirection = direction;
+
+        if (snake.containsSelf()) {
+            gameRunning = false;
+        }
+
+        if (!board.checkEdge(snake.coordinate())) {
+            if (loop) {
+                Coordinate current = snake.coordinate();
+                int nextX;
+                if (current.x() < 0) {
+                    nextX = board.width() - 1;
+                } else if (current.x() > board.width() - 1) {
+                    nextX = 0;
+                } else {
+                    nextX = current.x();
+                }
+
+                int nextY;
+                if (current.y() < 0) {
+                    nextY = board.height() - 1;
+                } else if (current.y() > board.height() - 1) {
+                    nextY = 0;
+                } else {
+                    nextY = current.y();
+                }
+
+                snake.offsetUpdate(new Coordinate(nextX, nextY));
+            } else {
+                gameRunning = false;
+            }
+        }
+    }
+
+    public void drawGame() {
+        drawBoard(board);
+        drawFood(food);
+        drawSnake(snake);
+
+        int highScore = highScores.get(gameMode);
+
+        drawText("Score: " + snake.length(), new Coordinate(0, 0), 100, 50, 25,
+                snake.length() < highScore ? Color.RED : Color.GREEN);
+        drawText("High Score: " + highScore, new Coordinate(32, 25), 100, 50, 25,
+                Color.GREEN);
+        drawText("Mode: " + gameMode, new Coordinate(0, 50), 100, 50, 25,
+                Color.GREEN);
+        drawText("Time Elapsed: " + (System.currentTimeMillis() - startTime) / 1000,
+                new Coordinate(0, 75), 100,
+                50, 25,
+                Color.GREEN);
+    }
+
     /**
      * Update the game state
      *
@@ -137,52 +208,13 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == timer) {
             if (gameRunning) {
-                if (snake.contains(food)) {
-                    food = generator.genFood(board, snake);
-                    snake.update(direction.vector(), true);
-                } else {
-                    snake.update(direction.vector(), false);
+                switch (gameMode) {
+                    default -> classicSnakeUpdate();
                 }
 
-                lastDirection = direction;
-
-                if (snake.containsSelf()) {
-                    gameRunning = false;
+                if (gameRunning) {
+                    drawGame();
                 }
-
-                if (!board.checkEdge(snake.coordinate())) {
-                    if (loop) {
-                        Coordinate current = snake.coordinate();
-                        int nextX;
-                        if (current.x() < 0) {
-                            nextX = board.width() - 1;
-                        } else if (current.x() > board.width() - 1) {
-                            nextX = 0;
-                        } else {
-                            nextX = current.x();
-                        }
-
-                        int nextY;
-                        if (current.y() < 0) {
-                            nextY = board.height() - 1;
-                        } else if (current.y() > board.height() - 1) {
-                            nextY = 0;
-                        } else {
-                            nextY = current.y();
-                        }
-
-                        snake.offsetUpdate(new Coordinate(nextX, nextY));
-                    } else {
-                        gameRunning = false;
-                        return;
-                    }
-                }
-
-                drawBoard(board);
-                drawFood(food);
-                drawSnake(snake);
-                drawText("Score: " + snake.length(), new Coordinate(0, 0), 100, 50, 25,
-                        Color.GREEN);
             }
 
             if (!gameRunning) {
@@ -204,6 +236,9 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
                         loop ? Color.GREEN : Color.RED);
             }
 
+            if (snake.length() > highScores.get(gameMode)) {
+                highScores.put(gameMode, snake.length());
+            }
             repaint();
         }
     }
