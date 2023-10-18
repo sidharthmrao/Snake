@@ -43,7 +43,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
     private Direction lastDirection = Direction.NONE; // Last moved direction of the snake
     private boolean gameRunning;
     private String gameMode; // Classic, Walls, Portals, etc.
-    private int speed = 1;
+    private int speed = 2;
     private double delay;
     private HashMap<String, Integer> highScores = new HashMap<>();
     private double startTime;
@@ -60,7 +60,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
             boolean loop) {
         canvas = new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_ARGB);
 
-        this.delay = 1000 / (double) fps;
+        this.delay = 500 / (double) fps;
         this.loop = loop;
         this.scale = windowWidth / boardWidth;
 
@@ -79,7 +79,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
      * Restart the game. Resets the snake object and direction.
      */
     public void reset() {
-        this.timer = new Timer((int) delay * speed, this);
+        this.timer = new Timer((int) delay * (4 - speed), this);
         this.snake = new SnakeNode(generator.genSnakeStart(board));
         this.food = generator.genFood(board, snake);
         direction = Direction.NONE;
@@ -87,7 +87,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
 
         gameRunning = true;
         timer.start();
-        startTime = System.currentTimeMillis();
+        startTime = -1;
     }
 
     @Override
@@ -103,22 +103,34 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (gameRunning) {
-            if (e.getKeyCode() == KeyEvent.VK_UP) {
+            if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
+                if (startTime == -1) {
+                    startTime = System.currentTimeMillis();
+                }
                 if (lastDirection == Direction.DOWN) {
                     return;
                 }
                 direction = Direction.UP;
-            } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
+                if (startTime == -1) {
+                    startTime = System.currentTimeMillis();
+                }
                 if (lastDirection == Direction.UP) {
                     return;
                 }
                 direction = Direction.DOWN;
-            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
+                if (startTime == -1) {
+                    startTime = System.currentTimeMillis();
+                }
                 if (lastDirection == Direction.RIGHT) {
                     return;
                 }
                 direction = Direction.LEFT;
-            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
+                if (startTime == -1) {
+                    startTime = System.currentTimeMillis();
+                }
                 if (lastDirection == Direction.LEFT) {
                     return;
                 }
@@ -129,6 +141,9 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
                 reset();
             } else if (e.getKeyCode() == KeyEvent.VK_L) {
                 loop = !loop;
+            } else if (e.getKeyCode() == KeyEvent.VK_S) {
+                speed = speed == 2 ? 3 : speed == 3 ? 1 : 2;
+                timer.setDelay((int) delay * speed);
             }
         }
 
@@ -187,16 +202,55 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
 
         int highScore = highScores.get(gameMode);
 
-        drawText("Score: " + snake.length(), new Coordinate(0, 0), 100, 50, 25,
-                snake.length() < highScore ? Color.RED : Color.GREEN);
-        drawText("High Score: " + highScore, new Coordinate(32, 25), 100, 50, 25,
-                Color.GREEN);
-        drawText("Mode: " + gameMode, new Coordinate(0, 50), 100, 50, 25,
-                Color.GREEN);
-        drawText("Time Elapsed: " + (System.currentTimeMillis() - startTime) / 1000,
-                new Coordinate(0, 75), 100,
-                50, 25,
-                Color.GREEN);
+        drawText("Score: " + snake.length(), new Coordinate(10, 24), 25,
+                snake.length() < highScore ? Color.RED : Color.GREEN, false);
+        drawText("High Score: " + highScore, new Coordinate(10, 46), 25,
+                Color.GREEN, false);
+        drawText("Mode: " + gameMode, new Coordinate(10, 70), 25,
+                Color.GREEN, false);
+        drawText("Time Elapsed: " + (startTime == -1 ? "0s" :
+                        (System.currentTimeMillis() - startTime) / 1000 + "s"),
+                new Coordinate(10, 94), 25, Color.GREEN, false);
+    }
+
+    public void drawGameOver() {
+        Coordinate initial = new Coordinate(board.width() * scale / 2, 8 * getHeight() / 20);
+
+        drawText("GAME OVER.", initial, 50, Color.GREEN, true);
+        drawText("PRESS ENTER TO RESTART.",
+                new Vector(0, 30).add(initial),30, Color.GREEN, true);
+        drawSettings(new Vector(0, 100).add(initial));
+    }
+
+    public void drawSettings(Coordinate initial) {
+        Coordinate optionsStart = new Vector(-100, 0).add(initial);
+        drawText("OPTIONS",
+                 optionsStart,
+                15,
+                 Color.WHITE,
+                true);
+
+        clearText("Edge Looping (L): OFF",
+                 new Vector(0, 30).add(optionsStart),
+                15,
+                true);
+
+        drawText("Edge Looping (L): " + (loop ? "ON" : "OFF"),
+                 new Vector(0, 30).add(optionsStart),
+                15,
+                 loop ? Color.GREEN : Color.RED,
+                true);
+
+        clearText("Speed (S): MEDIUM",
+                 new Vector(0, 50).add(optionsStart),
+                15,
+                true);
+
+        drawText("Speed (S): " + (speed == 2 ? "Medium" : speed == 3 ? "Fast" : "Slow"),
+                 new Vector(0, 50).add(optionsStart),
+                15,
+                 Color.GREEN,
+                true);
     }
 
     /**
@@ -218,22 +272,7 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
             }
 
             if (!gameRunning) {
-                drawText("GAME OVER.", new Coordinate(getWidth() / 20, getHeight() / 20),
-                        (int) (getWidth() * (.9)), (int) (getHeight() * .9), 50, Color.GREEN);
-                drawText("PRESS ENTER TO RESTART.",
-                        new Coordinate(getWidth() / 20, getHeight() / 20 + 40),
-                        (int) (getWidth() * (.9)), (int) (getHeight() * .9), 30, Color.GREEN);
-                drawText("Press L to toggle edge looping.",
-                        new Coordinate(getWidth() / 20, getHeight() / 20 + 90),
-                        (int) (getWidth() * (.9)), (int) (getHeight() * .9), 15, Color.GREEN);
-                drawText("Edge Looping: " + !loop,
-                        new Coordinate(getWidth() / 20, getHeight() / 20 + 120),
-                        (int) (getWidth() * (.9)), (int) (getHeight() * .9), 15,
-                        Color.BLACK); // Clear out the last text before toggle
-                drawText("Edge Looping: " + loop,
-                        new Coordinate(getWidth() / 20, getHeight() / 20 + 120),
-                        (int) (getWidth() * (.9)), (int) (getHeight() * .9), 15,
-                        loop ? Color.GREEN : Color.RED);
+                drawGameOver();
             }
 
             if (snake.length() > highScores.get(gameMode)) {
@@ -254,36 +293,35 @@ public class Snake extends JPanel implements ActionListener, KeyListener {
         g2.drawImage(canvas, null, null);
     }
 
+    public void clearText(String text, Coordinate coordinate, int fontSize, boolean center) {
+        drawText(new String(new char[text.length()]).replace("\0", "█"), coordinate, fontSize, Color.BLACK
+                , center);
+    }
+
     /**
      * Draw text on the canvas
      *
      * @param text       Text to draw
      * @param coordinate Coordinate of the text
-     * @param width      Width of the text
-     * @param height     Height of the text
      * @param fontSize   Font size of the text
      * @param color      Color of the text
+     * @param center     Whether to center the text on the x-axis
      */
-    public void drawText(String text, Coordinate coordinate, int width, int height, int fontSize,
-            Color color) {
+    public void drawText(String text, Coordinate coordinate, int fontSize,
+            Color color, boolean center) {
         Graphics2D g2d = (Graphics2D) canvas.getGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
         g2d.setColor(color);
-        g2d.setFont(new Font("Blinker", Font.BOLD, fontSize));
+        g2d.setFont(new Font("Arial", Font.BOLD, fontSize));
 
-        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+        if (center) {
+            FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
 
-        Rectangle rect = new Rectangle(coordinate.x(), coordinate.y(), width, height);
-
-        int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
-        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
-
-        g2d.drawString(text, x, y);
+            int x = coordinate.x() - metrics.stringWidth(text) / 2;
+            g2d.drawString(text, x, coordinate.y());
+        } else {
+            g2d.drawString(text, coordinate.x(), coordinate.y());
+        }
     }
 
     /**
